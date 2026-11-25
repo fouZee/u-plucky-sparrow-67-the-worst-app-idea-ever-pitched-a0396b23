@@ -13,14 +13,22 @@ import { join } from "node:path";
 
 // The pitch: a deadpan founder-certain idea for a product nobody needs.
 const ENTRY =
-  "SnoreSync livestreams your snoring to strangers who rate every snore, " +
-  "because your sleep deserves a global audience, a leaderboard, and " +
-  "applause nobody asked for.";
+  "SnoreSync livestreams your snoring to strangers who pay to rate every " +
+  "snore, because your sleep deserves a global audience, a leaderboard, " +
+  "and a subscription nobody asked for.";
 
 function validateGate(text: string): void {
   if (typeof text !== "string") throw new Error("entry is not a string");
   if (text.length < 1 || text.length > 240) {
     throw new Error(`gate failed: length ${text.length} not in 1..240`);
+  }
+  // A pitch too short to be vivid loses to any specific one: demand enough
+  // room for a named app, its useless function, and who it is for.
+  if (text.length < 100) {
+    throw new Error(`gate failed: length ${text.length} under 100, too thin`);
+  }
+  if (!/\b(for|to|who)\b/i.test(text)) {
+    throw new Error("gate failed: pitch must say who the app is for");
   }
   if (text.trim().length === 0) {
     throw new Error("gate failed: entry is only whitespace");
